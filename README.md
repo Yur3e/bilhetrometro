@@ -1,4 +1,4 @@
-# 🎬 Bilhetrometro (2025)
+# 🎬 Bilhetrometro
 
 ## 🌟 Visão Geral
 
@@ -21,4 +21,7 @@ Este projeto é um dashboard interativo que permite visualizar e analisar o dese
 
 ## 📊 Fonte dos Dados
 
-Os dados foram obtidos através de uma extração via scraping de uma lista dos principais filmes de 2025.
+Os dados foram obtidos através de uma extração via scraping do site **Box Office Mojo**, especificamente da página de bilheteria mundial do ano de 2025 até a data de extração, que realizei no dia 13/08/2025.
+
+## 📈 Exemplo da Aplicação
+![Bilhetrometro](assets/bilhetrometrotop8.png)
