@@ -106,7 +106,7 @@ with col4:
         st.metric(label="Maior Bilheteria Estrangeira", value="N/A")
 
 # -------------------- Gráfico de Visualização Int. --------------------
-st.header('Gráfico de Barras Interativo')
+st.header('Gráfico de Barras - Bilhetrometro')
 
 if not df_filtrado_top_n.empty:
     chart = alt.Chart(df_filtrado_top_n).mark_bar().encode(
@@ -114,7 +114,7 @@ if not df_filtrado_top_n.empty:
         y=alt.Y('Título', sort='-x', title='Filme'),
         tooltip=['Título', alt.Tooltip('Mundialmente', format='$,.0f')]
     ).properties(
-        title=f'Top {num_filmes} Filmes por Bilheteria Mundial'
+        title=f'Top {num_filmes} Filmes por Bilheteria Mundial ↓'
     )
     st.altair_chart(chart, use_container_width=True)
 else:
