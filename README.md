@@ -13,11 +13,11 @@ Este projeto é um dashboard interativo que permite visualizar e analisar o dese
 
 ## 🔧 Tecnologias Utilizadas
 
-* **Python:**
-* **Streamlit:**
-* **Pandas:** 
-* **Altair:** 
-* **Numpy:** 
+* **Python**
+* **Streamlit**
+* **Pandas** 
+* **Altair** 
+* **Numpy** 
 
 ## 📊 Fonte dos Dados
 
