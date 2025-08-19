@@ -13,11 +13,11 @@ Este projeto é um dashboard interativo que permite visualizar e analisar o dese
 
 ## 🔧 Tecnologias Utilizadas
 
-* **Python:** Linguagem de programação principal.
-* **Streamlit:** Framework para a construção da aplicação web e do dashboard.
-* **Pandas:** Biblioteca para manipulação e análise de dados.
-* **Altair:** Biblioteca para a criação de visualizações de dados interativas.
-* **Numpy:** Biblioteca para suporte a operações numéricas.
+* **Python:**
+* **Streamlit:**
+* **Pandas:** 
+* **Altair:** 
+* **Numpy:** 
 
 ## 📊 Fonte dos Dados
 
