@@ -5,7 +5,7 @@ import altair as alt
 import requests
 from bs4 import BeautifulSoup
 
-# --- FUNÇÃO OTIMIZADA E MAIS ROBUSTA ---
+# --- FUNÇÃO OTIMIZADA PARA PEGAR OS DADOS ---
 @st.cache_data(ttl=3600) # Guarda os dados em cache por 1 hora
 def get_data():
     """
@@ -20,7 +20,7 @@ def get_data():
         soup = BeautifulSoup(response.text, 'lxml')
 
         table = soup.find('table')
-        # --- NOVO: Verificação para garantir que a tabela foi encontrada ---
+        # --- ADICIONADO: Verificação para garantir que a tabela foi encontrada ---
         if table is None:
             st.error("Não foi possível encontrar a tabela de dados na página. O site pode ter alterado a sua estrutura.")
             return None
@@ -138,7 +138,7 @@ else:
     df_filtrado = df[(df['Mundialmente'] >= worldwide_range[0]) & (df['Mundialmente'] <= worldwide_range[1])]
     df_filtrado_top_n = df_filtrado.nlargest(num_filmes, 'Mundialmente')
 
-    st.header('Métricas Principais')
+    st.header('Métricas Principais:')
     col1, col2, col3, col4 = st.columns(4)
     with col1:
         st.metric(label="Bilheteira Mundial Total", value=f"${df_filtrado['Mundialmente'].sum():,.0f}")
@@ -155,7 +155,7 @@ else:
             top_movie = df_filtrado.loc[df_filtrado['EUA/Canadá (%)'].idxmax()]
             st.metric(label=f"Maior % Bilheteira EUA/Canadá ({top_movie['Título']})", value=f"{top_movie['EUA/Canadá (%)'] * 100:.2f}%")
 
-    st.header('Análise Visual dos Filmes')
+    st.header('Análise Visual dos Filmes:')
     tab1, tab2 = st.tabs(["📊 Gráfico de Barras", "📄 Tabela Detalhada"])
 
     with tab1:
@@ -179,4 +179,4 @@ else:
             'EUA/Canadá (%)': '{:.2%}'
         }).background_gradient(cmap='viridis', subset=['Mundialmente', 'EUA/Canadá'])
         st.dataframe(df_styled, hide_index=True, use_container_width=True)
-
+        
