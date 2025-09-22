@@ -92,7 +92,7 @@ with col_titulo:
 st.divider()
 
 # -------------------- Barra Lateral com Ações e Filtros --------------------
-st.sidebar.header('Ações')
+st.sidebar.header('Atualizar Bilheteria:')
 if st.sidebar.button("Atualizar Dados da Web"):
     st.cache_data.clear()
     st.rerun()
