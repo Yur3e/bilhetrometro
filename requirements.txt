@@ -4,3 +4,4 @@ altair
 numpy
 beautifulsoup4
 requests
+lxml
