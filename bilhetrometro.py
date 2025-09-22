@@ -93,7 +93,7 @@ st.divider()
 
 # -------------------- Barra Lateral com Ações e Filtros --------------------
 st.sidebar.header('Ações:')
-if st.sidebar.button("Atualizar bilheteria"):
+if st.sidebar.button("Atualizar bilheteria mundial"):
     st.cache_data.clear()
     st.rerun()
 
