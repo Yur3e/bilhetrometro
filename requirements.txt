@@ -5,3 +5,4 @@ numpy
 beautifulsoup4
 requests
 lxml
+matplotlib
