@@ -3,3 +3,6 @@ pandas
 altair
 numpy
 beautifulsoup4
+csv
+os
+requests
