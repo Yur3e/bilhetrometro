@@ -131,7 +131,7 @@ else:
             **Desenvolvido por:** José Yure
             
             Este dashboard interativo foi construído com Streamlit para analisar
-            as bilheteiras de filmes.
+            as bilheterias mundial de filmes.
         """)
 
     # -------------------- Aplica os filtros e exibe o conteúdo --------------------
