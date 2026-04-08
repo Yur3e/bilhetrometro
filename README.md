@@ -1,27 +1,52 @@
-# 🎬 Bilhetrometro
+# Bilhetrometro
 
-## 🌟 Visão Geral
+Dashboard em Streamlit para acompanhar a bilheteria mundial dos principais filmes listados no Box Office Mojo.
 
-Este projeto é um dashboard interativo que permite visualizar e analisar o desempenho de bilheteria até o filme de Rank 1000 mais bem-sucedidos do mundo em 2025. 
+## Estrutura do projeto
 
-## 🚀 Funcionalidades
+```text
+.
+|-- app.py
+|-- bilhetrometro.py
+|-- dashboard.py
+|-- services/
+|   |-- __init__.py
+|   `-- box_office.py
+|-- assets/
+|   `-- dashboard-preview.png
+|-- README.md
+`-- requirements.txt
+```
 
-* **Métricas Principais:** Visualize instantaneamente a bilheteria mundial total, o filme com a maior arrecadação e os destaques dos mercados domésticos e estrangeiros.
-* **Gráfico Interativo:** Um gráfico de barras dinâmico do `Altair` que mostra o ranking dos filmes com base na bilheteria mundial. É possível interagir com o gráfico para ver detalhes de cada filme.
-* **Filtros na Barra Lateral:** Personalize a visualização com filtros para selecionar o número de filmes e a faixa de bilheteria mundial de interesse.
-* **Tabela Dinâmica:** Uma tabela detalhada com os dados dos filmes, incluindo bilheteria mundial, doméstica (EUA/Canadá) e a porcentagem de contribuição do mercado doméstico.
+## Funcionalidades
 
-## 🔧 Tecnologias Utilizadas
+- Métricas principais de bilheteria mundial e doméstica.
+- Gráfico interativo com ranking dos filmes.
+- Filtros por quantidade de filmes e faixa de arrecadação.
+- Tabela detalhada com os valores tratados para análise.
 
-* **Python**
-* **Streamlit**
-* **Pandas** 
-* **Altair** 
-* **Numpy** 
+## Tecnologias
 
-## 📊 Fonte dos Dados
+- Python
+- Streamlit
+- Pandas
+- Altair
+- NumPy
+- Beautiful Soup
 
-Os dados foram obtidos através de uma extração via scraping do site **Box Office Mojo**, especificamente da página de bilheteria mundial do ano de 2025 até a data de extração, que realizei no dia 13/08/2025.
+## Como executar
 
-## 📈 Exemplo da Aplicação
-![Bilhetrometro](assets/bilhetrometrotop8.png)
+```bash
+pip install -r requirements.txt
+streamlit run app.py
+```
+
+O arquivo `bilhetrometro.py` foi mantido como compatibilidade para execuções antigas.
+
+## Fonte dos dados
+
+Os dados são coletados diretamente da página de bilheteria mundial do Box Office Mojo no momento da execução.
+
+## Prévia
+
+![Bilhetrometro](assets/dashboard-preview.png)
