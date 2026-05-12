@@ -29,7 +29,7 @@ def get_box_office_data() -> pd.DataFrame:
     soup = BeautifulSoup(response.text, "lxml")
     table = soup.find("table")
     if table is None:
-        raise DataFetchError("Não foi possível encontrar a tabela de dados na página.")
+        raise DataFetchError("Nao foi possivel encontrar a tabela de dados na pagina.")
 
     rows = table.find_all("tr")
     data = []
@@ -50,7 +50,7 @@ def get_box_office_data() -> pd.DataFrame:
 
     if not data:
         return pd.DataFrame(
-            columns=["Rank", "Título", "Mundialmente", "EUA/Canadá", "EUA/Canadá (%)"]
+            columns=["Rank", "Titulo", "Mundialmente", "EUA/Canada", "EUA/Canada (%)"]
         )
 
     df = pd.DataFrame(data)
@@ -61,10 +61,10 @@ def get_box_office_data() -> pd.DataFrame:
     return df.rename(
         columns={
             "rank": "Rank",
-            "title": "Título",
+            "title": "Titulo",
             "worldwide": "Mundialmente",
-            "domestic": "EUA/Canadá",
-            "domestic_share": "EUA/Canadá (%)",
+            "domestic": "EUA/Canada",
+            "domestic_share": "EUA/Canada (%)",
         }
     )
 

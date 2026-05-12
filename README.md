@@ -20,10 +20,11 @@ Dashboard em Streamlit para acompanhar a bilheteria mundial dos principais filme
 
 ## Funcionalidades
 
-- Métricas principais de bilheteria mundial e doméstica.
-- Gráfico interativo com ranking dos filmes.
-- Filtros por quantidade de filmes e faixa de arrecadação.
-- Tabela detalhada com os valores tratados para análise.
+- Metricas principais de bilheteria mundial, media por filme e peso domestico.
+- Filtros por busca de titulo, quantidade no ranking, faixa de arrecadacao e participacao EUA/Canada.
+- Cartoes de destaque para campeao mundial, maior forca domestica e filme mais internacional.
+- Abas com ranking, composicao domestica/internacional, dispersao e tabela detalhada.
+- Exportacao dos dados filtrados em CSV.
 
 ## Tecnologias
 
@@ -41,12 +42,12 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-O arquivo `bilhetrometro.py` foi mantido como compatibilidade para execuções antigas.
+O arquivo `bilhetrometro.py` foi mantido como compatibilidade para execucoes antigas.
 
 ## Fonte dos dados
 
-Os dados são coletados diretamente da página de bilheteria mundial do Box Office Mojo no momento da execução.
+Os dados sao coletados diretamente da pagina de bilheteria mundial do Box Office Mojo no momento da execucao.
 
-## Prévia
+## Previa
 
 ![Bilhetrometro](assets/dashboard-preview.png)
