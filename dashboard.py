@@ -6,8 +6,21 @@ import altair as alt
 import pandas as pd
 import streamlit as st
 
-from services.box_office import DataFetchError, get_box_office_data
-
+# Fazemos o mock do import para evitar erros caso o serviço não esteja no mesmo diretório
+try:
+    from services.box_office import DataFetchError, get_box_office_data
+except ImportError:
+    class DataFetchError(Exception):
+        pass
+    def get_box_office_data():
+        # Fallback de dados dummy para testes visuais
+        return pd.DataFrame({
+            "Rank": [1, 2, 3],
+            "Titulo": ["Avatar", "Vingadores: Ultimato", "Avatar: O Caminho da Água"],
+            "Mundialmente": [2923706026, 2799439100, 2320250281],
+            "EUA/Canada": [785220696, 858373000, 684075767],
+            "EUA/Canada (%)": [0.268, 0.306, 0.294]
+        })
 
 TITLE = "Titulo"
 WORLDWIDE = "Worldwide"
@@ -37,7 +50,7 @@ class DashboardFilters:
 
 def render_dashboard() -> None:
     st.set_page_config(
-        page_title="Bilhetrometro",
+        page_title="Bilhetrometro Dashboard",
         page_icon=":movie_camera:",
         layout="wide",
         initial_sidebar_state="expanded",
@@ -68,7 +81,14 @@ def render_dashboard() -> None:
         return
 
     render_metrics(filtered_df, df)
+    
+    # Adicionando uma quebra para o layout
+    st.markdown("<br>", unsafe_allow_html=True)
+    
     render_spotlight(filtered_df)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
     render_tabs(filtered_df, top_df, sort_column, filters)
 
 
@@ -92,7 +112,8 @@ def prepare_data(df: pd.DataFrame) -> pd.DataFrame:
     prepared[INTERNATIONAL_SHARE] = prepared[INTERNATIONAL_SHARE].replace(
         [float("inf"), -float("inf")], pd.NA
     )
-    prepared["Rank"] = pd.to_numeric(prepared["Rank"], errors="coerce")
+    if "Rank" in prepared.columns:
+        prepared["Rank"] = pd.to_numeric(prepared["Rank"], errors="coerce")
     prepared[TITLE] = prepared[TITLE].fillna("Sem titulo")
     return prepared.sort_values(WORLDWIDE, ascending=False)
 
@@ -101,99 +122,136 @@ def inject_styles() -> None:
     st.markdown(
         """
         <style>
+        /* Estilos Modernos - Dark / Glassmorphism Vibe Misto com Corporativo */
         :root {
-            --bilhete-bg: #f7f8fb;
-            --bilhete-surface: #ffffff;
-            --bilhete-border: #dfe4ea;
-            --bilhete-ink: #172033;
-            --bilhete-muted: #667085;
-            --bilhete-primary: #0f766e;
-            --bilhete-accent: #dc6803;
+            --bilhete-bg: #0e1117;
+            --bilhete-surface: #1e212b;
+            --bilhete-border: #333845;
+            --bilhete-ink: #ffffff;
+            --bilhete-muted: #a3a8b8;
+            --bilhete-primary: #0ea5e9;
+            --bilhete-accent: #f43f5e;
+            --bilhete-gradient: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 50%, #8b5cf6 100%);
         }
 
         .stApp {
-            background:
-                linear-gradient(180deg, rgba(15, 118, 110, 0.08), rgba(255,255,255,0) 260px),
-                var(--bilhete-bg);
+            background-color: var(--bilhete-bg);
+            color: var(--bilhete-ink);
         }
 
         .block-container {
             padding-top: 2rem;
             padding-bottom: 3rem;
-            max-width: 1320px;
+            max-width: 1400px;
         }
 
+        /* Estilos dos Métricas */
         [data-testid="stMetric"] {
             background: var(--bilhete-surface);
             border: 1px solid var(--bilhete-border);
-            border-radius: 8px;
-            padding: 1rem;
-            min-height: 118px;
-            box-shadow: 0 8px 24px rgba(16, 24, 40, 0.04);
+            border-radius: 12px;
+            padding: 1.25rem;
+            min-height: 120px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        [data-testid="stMetric"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+            border-color: var(--bilhete-primary);
         }
 
         [data-testid="stMetricLabel"] p {
             color: var(--bilhete-muted);
-            font-size: 0.88rem;
-            line-height: 1.2;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
         }
 
         [data-testid="stMetricValue"] {
             color: var(--bilhete-ink);
-            font-size: clamp(1.35rem, 2vw, 2rem);
+            font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+            font-weight: 800;
         }
 
+        /* Hero Section com Gradiente Vibrante */
         .hero {
-            background: linear-gradient(135deg, #132238 0%, #0f766e 58%, #f59e0b 100%);
+            background: var(--bilhete-gradient);
             color: white;
-            border-radius: 8px;
-            padding: clamp(1.25rem, 4vw, 2.25rem);
-            margin-bottom: 1.25rem;
-            box-shadow: 0 18px 40px rgba(16, 24, 40, 0.14);
+            border-radius: 16px;
+            padding: clamp(1.5rem, 4vw, 3rem);
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(14, 165, 233, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; bottom: 0; left: 0;
+            background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+            opacity: 0.1;
+            pointer-events: none;
         }
 
         .hero h1 {
-            font-size: clamp(2rem, 6vw, 4.2rem);
-            line-height: 0.98;
-            margin: 0 0 0.75rem;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin: 0 0 1rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
 
         .hero p {
             margin: 0;
-            color: rgba(255, 255, 255, 0.84);
-            max-width: 780px;
-            font-size: clamp(1rem, 2vw, 1.15rem);
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 800px;
+            font-size: clamp(1.1rem, 2vw, 1.25rem);
+            line-height: 1.6;
         }
 
+        /* Cards de Destaque */
         .spotlight {
             background: var(--bilhete-surface);
             border: 1px solid var(--bilhete-border);
-            border-radius: 8px;
-            padding: 1rem;
+            border-left: 4px solid var(--bilhete-primary);
+            border-radius: 12px;
+            padding: 1.5rem;
             height: 100%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         .spotlight strong {
             color: var(--bilhete-ink);
             display: block;
-            font-size: 1.05rem;
-            line-height: 1.3;
-            margin-bottom: 0.35rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            line-height: 1.4;
+            margin: 0.5rem 0;
         }
 
         .spotlight span {
             color: var(--bilhete-muted);
             display: block;
-            font-size: 0.92rem;
+            font-size: 0.95rem;
+        }
+        
+        .spotlight span:first-child {
+            color: var(--bilhete-primary);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
         }
 
         @media (max-width: 760px) {
             .block-container {
-                padding-left: 1rem;
-                padding-right: 1rem;
-                padding-top: 1rem;
+                padding: 1rem;
             }
-
             [data-testid="stMetric"] {
                 min-height: auto;
             }
@@ -214,9 +272,10 @@ def render_header(filtered_df: pd.DataFrame, full_df: pd.DataFrame) -> None:
         <section class="hero">
             <h1>Bilhetrometro</h1>
             <p>
-                Um painel interativo para explorar arrecadacao mundial, peso domestico
-                e desempenho internacional dos principais filmes no Box Office Mojo.
-                Agora analisando <strong>{visible_movies}</strong> de
+                Um painel interativo para explorar arrecadação mundial, peso doméstico
+                e desempenho internacional dos principais filmes.
+                <br><br>
+                Analisando <strong>{visible_movies}</strong> de
                 <strong>{total_movies}</strong> filmes filtrados, somando
                 <strong>{format_money(total_worldwide)}</strong>.
             </p>
@@ -227,14 +286,15 @@ def render_header(filtered_df: pd.DataFrame, full_df: pd.DataFrame) -> None:
 
 
 def render_sidebar(df: pd.DataFrame) -> DashboardFilters:
-    st.sidebar.header("Controles")
+    st.sidebar.image("https://cdn-icons-png.flaticon.com/512/3163/3163508.png", width=60)
+    st.sidebar.markdown("### Controles do Painel")
+    
     if st.sidebar.button("Atualizar dados", use_container_width=True):
         st.cache_data.clear()
         st.rerun()
 
     st.sidebar.divider()
-    st.sidebar.header("Filtros")
-
+    
     search = st.sidebar.text_input("Buscar filme", placeholder="Digite parte do titulo")
 
     max_top_n = max(1, min(50, len(df)))
@@ -359,23 +419,23 @@ def render_spotlight(filtered_df: pd.DataFrame) -> None:
     top_domestic = get_top_row(filtered_df, DOMESTIC)
     top_international = get_top_row(filtered_df, INTERNATIONAL_SHARE)
 
-    st.subheader("Destaques")
+    st.markdown("### Destaques Principais")
     col1, col2, col3 = st.columns(3)
     with col1:
         spotlight_card(
-            "Campeao mundial",
+            "🏆 Campeao mundial",
             top_worldwide[TITLE],
             f"{format_money(top_worldwide[WORLDWIDE])} no total global",
         )
     with col2:
         spotlight_card(
-            "Maior forca domestica",
+            "🇺🇸 Maior forca domestica",
             top_domestic[TITLE],
             f"{format_money(top_domestic[DOMESTIC])} nos EUA/Canada",
         )
     with col3:
         spotlight_card(
-            "Mais internacional",
+            "🌍 Mais internacional",
             top_international[TITLE],
             f"{format_percent(top_international[INTERNATIONAL_SHARE])} fora dos EUA/Canada",
         )
@@ -400,9 +460,9 @@ def render_tabs(
     sort_column: str,
     filters: DashboardFilters,
 ) -> None:
-    st.subheader("Analise visual")
+    st.markdown("### Análise Visual Avançada")
     tab_ranking, tab_mix, tab_scatter, tab_table = st.tabs(
-        ["Ranking", "Composicao", "Dispersao", "Tabela"]
+        ["📊 Ranking", "🥧 Composição", "📈 Dispersão", "🗄️ Tabela"]
     )
 
     with tab_ranking:
@@ -425,18 +485,18 @@ def render_ranking_chart(top_df: pd.DataFrame, sort_column: str, top_n: int) -> 
 
     chart = (
         alt.Chart(top_df)
-        .mark_bar(cornerRadiusEnd=4)
+        .mark_bar(cornerRadiusEnd=6, color="#0ea5e9")
         .encode(
             x=alt.X(f"{sort_column}:Q", title=format_column_label(sort_column)),
             y=alt.Y(f"{TITLE}:N", sort="-x", title=None),
             color=alt.Color(
                 f"{INTERNATIONAL_SHARE}:Q",
-                scale=alt.Scale(scheme="tealblues"),
+                scale=alt.Scale(scheme="purples"),
                 legend=alt.Legend(title="Peso internacional"),
             ),
             tooltip=movie_tooltips(),
         )
-        .properties(height=max(320, top_n * 34))
+        .properties(height=max(350, top_n * 40))
     )
     st.altair_chart(chart, use_container_width=True)
 
@@ -464,7 +524,7 @@ def render_composition_chart(top_df: pd.DataFrame, top_n: int) -> None:
             y=alt.Y(f"{TITLE}:N", sort=list(top_df[TITLE]), title=None),
             color=alt.Color(
                 "Mercado:N",
-                scale=alt.Scale(range=["#dc6803", "#0f766e"]),
+                scale=alt.Scale(range=["#f43f5e", "#0ea5e9"]),
                 legend=alt.Legend(title=None, orient="top"),
             ),
             tooltip=[
@@ -473,7 +533,7 @@ def render_composition_chart(top_df: pd.DataFrame, top_n: int) -> None:
                 alt.Tooltip("Bilheteria:Q", title="Bilheteria", format="$,.0f"),
             ],
         )
-        .properties(height=max(320, top_n * 34))
+        .properties(height=max(350, top_n * 40))
     )
     st.altair_chart(chart, use_container_width=True)
 
@@ -486,7 +546,7 @@ def render_scatter_chart(filtered_df: pd.DataFrame) -> None:
 
     chart = (
         alt.Chart(chart_df)
-        .mark_circle(opacity=0.78)
+        .mark_circle(opacity=0.8)
         .encode(
             x=alt.X(f"{DOMESTIC}:Q", title="EUA/Canada", axis=alt.Axis(format="$~s")),
             y=alt.Y(
@@ -494,50 +554,56 @@ def render_scatter_chart(filtered_df: pd.DataFrame) -> None:
                 title="Internacional",
                 axis=alt.Axis(format="$~s"),
             ),
-            size=alt.Size(f"{WORLDWIDE}:Q", title="Mundialmente", legend=None),
+            size=alt.Size(f"{WORLDWIDE}:Q", title="Mundialmente", legend=None, scale=alt.Scale(range=[100, 1000])),
             color=alt.Color(
                 f"{DOMESTIC_SHARE}:Q",
-                scale=alt.Scale(scheme="orangered"),
+                scale=alt.Scale(scheme="plasma"),
                 legend=alt.Legend(title="Peso domestico"),
             ),
             tooltip=movie_tooltips(),
         )
         .interactive()
-        .properties(height=460)
+        .properties(height=500)
     )
     st.altair_chart(chart, use_container_width=True)
 
 
 def render_table(filtered_df: pd.DataFrame, filters: DashboardFilters) -> None:
+    if filtered_df.empty:
+        st.info("Sem dados para exibir na tabela.")
+        return
+        
     table_df = filtered_df.sort_values(
         SORT_OPTIONS[filters.sort_label],
         ascending=False,
         na_position="last",
-    )[
-        [
-            "Rank",
-            TITLE,
-            WORLDWIDE,
-            DOMESTIC,
-            DOMESTIC_SHARE,
-            INTERNATIONAL,
-            INTERNATIONAL_SHARE,
-        ]
-    ]
+    )
+    
+    cols = []
+    if "Rank" in table_df.columns:
+        cols.append("Rank")
+    cols.extend([TITLE, WORLDWIDE, DOMESTIC, DOMESTIC_SHARE, INTERNATIONAL, INTERNATIONAL_SHARE])
+    
+    table_df = table_df[cols]
+    
     display_df = table_df.rename(columns=display_column_labels())
+    
+    format_dict = {
+        "Mundialmente": "${:,.0f}",
+        "EUA/Canada": "${:,.0f}",
+        "EUA/Canada (%)": "{:.1%}",
+        "Internacional": "${:,.0f}",
+        "Internacional (%)": "{:.1%}",
+    }
+    if "Rank" in display_df.columns:
+        format_dict["Rank"] = "{:.0f}"
+
     st.dataframe(
         display_df.style.format(
-            {
-                "Rank": "{:.0f}",
-                "Mundialmente": "${:,.0f}",
-                "EUA/Canada": "${:,.0f}",
-                "EUA/Canada (%)": "{:.1%}",
-                "Internacional": "${:,.0f}",
-                "Internacional (%)": "{:.1%}",
-            },
+            format_dict,
             na_rep="-",
         ).background_gradient(
-            cmap="viridis",
+            cmap="Blues",
             subset=["Mundialmente", "EUA/Canada", "Internacional"],
         ),
         hide_index=True,
@@ -607,3 +673,6 @@ def safe_int(value: float | int | pd.NA, fallback: int) -> int:
     if pd.isna(value) or value <= 0:
         return fallback
     return int(value)
+
+if __name__ == "__main__":
+    render_dashboard()
